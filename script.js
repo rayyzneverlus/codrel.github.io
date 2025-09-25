@@ -1,5 +1,11 @@
-// Data awal (akan disimpan di localStorage)
-let kumpulanKode = {
+// Konfigurasi Admin (Hanya 1 akun khusus)
+const ADMIN_CREDENTIALS = {
+    username: 'admin',
+    password: 'codrel123'
+};
+
+// Data awal kode (jika localStorage kosong)
+const DATA_AWAL = {
     'ai-converter': {
         nama: 'AI & Converter',
         kode: [
@@ -8,6 +14,7 @@ let kumpulanKode = {
                 judul: 'Handler ToFigure untuk Bot WhatsApp',
                 deskripsi: 'Kode JavaScript untuk mengonversi gambar menjadi figure/sketsa menggunakan API ZELARIXA. Cocok untuk bot WhatsApp berbasis Baileys.',
                 bahasa: 'javascript',
+                kategori: 'ai-converter',
                 kodeSumber: `// Feature : ToFigure
 // Created by Farel
 // Source : https://whatsapp.com/channel/0029Vb6lzpD0bIds18WBqH0Y
@@ -102,6 +109,7 @@ export default handler`
                 judul: 'Template HTML Sederhana',
                 deskripsi: 'Contoh halaman web dasar dengan CSS responsif.',
                 bahasa: 'html',
+                kategori: 'web',
                 kodeSumber: `<!DOCTYPE html>
 <html lang="id">
 <head>
@@ -123,4 +131,281 @@ export default handler`
                 judul: 'Handler Reply Bot Sederhana',
                 deskripsi: 'Kode JS untuk bot WhatsApp yang merespon pesan.',
                 bahasa: 'javascript',
-                kodeSumber: `const handler = async (m, {
+                kategori: 'bot',
+                kodeSumber: `const handler = async (m, { conn }) => {
+    if (m.text === 'halo') {
+        await conn.reply(m.chat, 'Halo juga!', m)
+    }
+}
+export default handler`
+            }
+        ]
+    }
+};
+
+// Fungsi utama: Load data dari localStorage atau data awal
+let kumpulanKode = JSON.parse(localStorage.getItem('kumpulanKode')) || DATA_AWAL;
+let isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
+let currentEditingId = null;
+
+// Event listener saat DOM loaded
+document.addEventListener('DOMContentLoaded', () => {
+    initApp();
+    tampilkanDaftarKode();
+    setupEventListeners();
+});
+
+// Inisialisasi app
+function initApp() {
+    if (isAdminLoggedIn) {
+        showAdminMode();
+    } else {
+        showPublicMode();
+    }
+    // Load dark mode dari localStorage
+    if (localStorage.getItem('darkMode') === 'true') {
+        document.body.classList.add('dark');
+        updateDarkModeButtons(true);
+    }
+}
+
+// Tampilkan Public Mode
+function showPublicMode() {
+    document.getElementById('publicHeader').style.display = 'block';
+    document.getElementById('adminHeader').style.display = 'none';
+    document.getElementById('tambah-kode').style.display = 'none';
+    document.getElementById('detail-actions').style.display = 'none'; // Sembunyikan actions di detail
+    document.querySelector('footer p').textContent = '&copy; 2024 Codrel. Public hanya lihat. Dibuat dengan ❤️ oleh AI Assistant.';
+}
+
+// Tampilkan Admin Mode
+function showAdminMode() {
+    document.getElementById('publicHeader').style.display = 'none';
+    document.getElementById('adminHeader').style.display = 'block';
+    document.getElementById('tambah-kode').style.display = 'block';
+    document.querySelector('footer p').textContent = '&copy; 2024 Codrel. Admin Mode - Khusus pemilik. Dibuat dengan ❤️ oleh AI Assistant.';
+}
+
+// Setup event listeners
+function setupEventListeners() {
+    // Admin Login
+    document.getElementById('adminLoginBtn').addEventListener('click', () => {
+        document.getElementById('adminModal').style.display = 'block';
+    });
+
+    document.getElementById('formAdminLogin').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const username = document.getElementById('usernameAdmin').value;
+        const password = document.getElementById('passwordAdmin').value;
+        if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+            isAdminLoggedIn = true;
+            localStorage.setItem('isAdminLoggedIn', 'true');
+            document.getElementById('adminModal').style.display = 'none';
+            showAdminMode();
+            tampilkanDaftarKode();
+            alert('Selamat datang, Admin!');
+        } else {
+            document.getElementById('loginError').style.display = 'block';
+        }
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        isAdminLoggedIn = false;
+        localStorage.removeItem('isAdminLoggedIn');
+        showPublicMode();
+        tampilkanDaftarKode();
+        // Tutup detail jika terbuka
+        document.getElementById('kode-detail').style.display = 'none';
+    });
+
+    // Modal close
+    document.querySelectorAll('.close').forEach(closeBtn => {
+        closeBtn.addEventListener('click', () => {
+            closeBtn.closest('.modal').style.display = 'none';
+            document.getElementById('loginError').style.display = 'none';
+        });
+    });
+
+    window.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal')) {
+            e.target.style.display = 'none';
+            document.getElementById('loginError').style.display = 'none';
+        }
+    });
+
+    // Dark Mode Public
+    document.getElementById('toggleDarkPublic').addEventListener('click', toggleDarkMode);
+
+    // Dark Mode Admin
+    document.getElementById('toggleDarkAdmin').addEventListener('click', toggleDarkMode);
+
+    // Search & Filter
+    document.getElementById('searchInput').addEventListener('input', tampilkanDaftarKode);
+    document.getElementById('kategoriFilter').addEventListener('change', tampilkanDaftarKode);
+
+    // Form Tambah Kode (Admin Only)
+    document.getElementById('formTambah').addEventListener('submit', tambahKode);
+
+    // Kembali dari detail
+    document.getElementById('kembali').addEventListener('click', () => {
+        document.getElementById('kode-detail').style.display = 'none';
+    });
+
+    // Edit & Delete (Admin Only)
+    document.getElementById('editBtn').addEventListener('click', bukaEditModal);
+    document.getElementById('deleteBtn').addEventListener('click', deleteKode);
+    document.getElementById('cancelEdit').addEventListener('click', () => {
+        document.getElementById('edit-modal').style.display = 'none';
+    });
+    document.getElementById('formEdit').addEventListener('submit', updateKode);
+}
+
+// Toggle Dark Mode
+function toggleDarkMode() {
+    document.body.classList.toggle('dark');
+    const isDark = document.body.classList.contains('dark');
+    localStorage.setItem('darkMode', isDark);
+    updateDarkModeButtons(isDark);
+}
+
+function updateDarkModeButtons(isDark) {
+    const publicBtn = document.getElementById('toggleDarkPublic');
+    const adminBtn = document.getElementById('toggleDarkAdmin');
+    if (isDark) {
+        publicBtn.textContent = '☀️ Light Mode';
+        adminBtn.textContent = '☀️ Light Mode';
+    } else {
+        publicBtn.textContent = '🌙 Dark Mode';
+        adminBtn.textContent = '🌙 Dark Mode';
+    }
+}
+
+// Tampilkan Daftar Kode (Public & Admin)
+function tampilkanDaftarKode() {
+    const search = document.getElementById('searchInput').value.toLowerCase();
+    const filterKategori = document.getElementById('kategoriFilter').value;
+    const daftarCard = document.getElementById('daftar-card');
+    daftarCard.innerHTML = '';
+
+    Object.keys(kumpulanKode).forEach(key => {
+        kumpulanKode[key].kode.forEach(kode => {
+            if ((kode.judul.toLowerCase().includes(search) || kode.deskripsi.toLowerCase().includes(search)) &&
+                (!filterKategori || kode.kategori === filterKategori)) {
+                const card = document.createElement('div');
+                card.className = 'kode-card';
+                card.innerHTML = `
+                    <h3>${escapeHtml(kode.judul)}</h3>
+                    <span class="kategori-tag">${kumpulanKode[kode.kategori].nama}</span>
+                    <p>${escapeHtml(kode.deskripsi)}</p>
+                `;
+                card.addEventListener('click', () => tampilkanDetail(kode));
+                daftarCard.appendChild(card);
+            }
+        });
+    });
+
+    if (daftarCard.innerHTML === '') {
+        daftarCard.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">Tidak ada kode yang ditemukan.</p>';
+    }
+}
+
+// Tampilkan Detail Kode
+function tampilkanDetail(kode) {
+    document.getElementById('daftar-kode').style.display = 'none';
+    document.getElementById('tambah-kode').style.display = isAdminLoggedIn ? 'block' : 'none';
+    document.getElementById('kode-detail').style.display = 'block';
+
+    const detailContent = document.getElementById('detail-content');
+    detailContent.innerHTML = `
+        <h3>${escapeHtml(kode.judul)}</h3>
+        <p>${escapeHtml(kode.deskripsi)}</p>
+        <span class="kategori-tag">${kumpulanKode[kode.kategori].nama}</span>
+        <br><br>
+        <button class="copy-btn" id="copyBtn" style="display: ${isAdminLoggedIn ? 'block' : 'none'};">📋 Copy Kode</button>
+        <pre><code class="language-${kode.bahasa}">${escapeHtml(kode.kodeSumber)}</code></pre>
+    `;
+
+    // Highlight dengan Prism
+    Prism.highlightAll();
+
+    // Copy Button (Admin Only)
+    if (isAdminLoggedIn) {
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            navigator.clipboard.writeText(kode.kodeSumber).then(() => {
+                alert('Kode berhasil dicopy!');
+            }).catch(() => {
+                alert('Gagal copy, salin manual ya!');
+            });
+        });
+
+        // Tampilkan actions admin
+        document.getElementById('detail-actions').style.display = 'block';
+        document.getElementById('editBtn').dataset.id = kode.id;
+        document.getElementById('deleteBtn').dataset.id = kode.id;
+    }
+}
+
+// Tambah Kode Baru (Admin Only)
+function tambahKode(e) {
+    e.preventDefault();
+    const judul = document.getElementById('judulInput').value;
+    const deskripsi = document.getElementById('deskripsiInput').value;
+    const bahasa = document.getElementById('bahasaInput').value;
+    const kategori = document.getElementById('kategoriInput').value;
+    const kodeSumber = document.getElementById('kodeInput').value;
+
+    if (!judul || !deskripsi || !bahasa || !kategori || !kodeSumber) {
+        alert('Semua field harus diisi!');
+        return;
+    }
+
+    const newId = Date.now(); // ID unik berdasarkan timestamp
+    const newKode = {
+        id: newId,
+        judul,
+        deskripsi,
+        bahasa,
+        kategori,
+        kodeSumber
+    };
+
+    if (!kumpulanKode[kategori]) {
+        kumpulanKode[kategori] = { nama: kategori.toUpperCase(), kode: [] };
+    }
+    kumpulanKode[kategori].kode.push(newKode);
+
+    simpanData();
+    tampilkanDaftarKode();
+    e.target.reset();
+    alert('Kode baru berhasil ditambahkan!');
+}
+
+// Edit Kode (Admin Only)
+function bukaEditModal() {
+    const id = parseInt(document.getElementById('editBtn').dataset.id);
+    currentEditingId = id;
+    const kode = cariKodeById(id);
+
+    if (!kode) return;
+
+    document.getElementById('editJudul').value = kode.judul;
+    document.getElementById('editDeskripsi').value = kode.deskripsi;
+    document.getElementById('editBahasa').value = kode.bahasa;
+    document.getElementById('editKategori').value = kode.kategori;
+    document.getElementById('editKode').value = kode.kodeSumber;
+
+    document.getElementById('edit-modal').style.display = 'block';
+}
+
+function updateKode(e) {
+    e.preventDefault();
+    const id = currentEditingId;
+    const kode = cariKodeById(id);
+
+    if (!kode) return;
+
+    kode.judul = document.getElementById('editJudul').value;
+    kode.deskripsi = document.getElementById('editDeskripsi').value;
+    kode.bahasa = document.getElementById('editBahasa').value;
+    kode.kategori = document.getElementById('editKategori').value;

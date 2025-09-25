@@ -1,4 +1,28 @@
-/* Reset dan Base */
+/* Variabel CSS untuk Mudah Custom */
+:root {
+    --primary-public: #4facfe;
+    --primary-admin: #28a745;
+    --secondary: #00f2fe;
+    --text-primary: #333;
+    --text-secondary: #666;
+    --bg-light: #f8f9fa;
+    --bg-card: white;
+    --border: #e9ecef;
+    --shadow: 0 4px 6px rgba(0,0,0,0.1);
+    --shadow-hover: 0 8px 25px rgba(0,0,0,0.15);
+    --radius: 12px;
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+body.dark {
+    --text-primary: #ddd;
+    --text-secondary: #bbb;
+    --bg-light: #2a2a2a;
+    --bg-card: #2d2d2d;
+    --border: #444;
+}
+
+/* Reset & Base */
 * {
     margin: 0;
     padding: 0;
@@ -6,362 +30,156 @@
 }
 
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Roboto', sans-serif;
     line-height: 1.6;
-    color: #333;
-    background-color: #f4f4f4;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    color: var(--text-primary);
+    background-color: var(--bg-light);
+    transition: var(--transition);
 }
 
-body.dark {
-    background-color: #1a1a1a;
-    color: #ddd;
+h1, h2, h3 {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
 }
 
-/* Modal (untuk Admin Login & Edit) */
-.modal {
-    display: none;
+/* Animasi Umum */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Sidebar */
+.sidebar {
     position: fixed;
-    z-index: 1000;
     left: 0;
     top: 0;
+    width: 280px;
+    height: 100vh;
+    background: var(--bg-card);
+    box-shadow: var(--shadow);
+    z-index: 900;
+    transition: var(--transition);
+    transform: translateX(-100%);
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+.toggle-sidebar-btn {
+    display: none;
+    position: fixed;
+    left: 1rem;
+    top: 1rem;
+    z-index: 950;
+    background: var(--primary-public);
+    color: white;
+    border: none;
+    padding: 0.8rem;
+    border-radius: var(--radius);
+    cursor: pointer;
+}
+
+.sidebar-content {
+    padding: 2rem;
+}
+
+.sidebar h3 {
+    color: var(--primary-public);
+    margin-bottom: 1rem;
+}
+
+.sidebar ul {
+    list-style: none;
+}
+
+.sidebar li {
+    margin-bottom: 0.5rem;
+}
+
+.sidebar a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--text-primary);
+    padding: 0.8rem;
+    border-radius: var(--radius);
+    transition: var(--transition);
+}
+
+.sidebar a:hover,
+.sidebar a.active {
+    background: var(--bg-light);
+    color: var(--primary-public);
+}
+
+body.dark .sidebar a:hover,
+body.dark .sidebar a.active {
+    background: #3a3a3a;
+}
+
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0,0,0,0.5);
-    backdrop-filter: blur(5px);
+    background: rgba(0,0,0,0.5);
+    z-index: 800;
 }
 
-.modal-content {
-    background-color: white;
-    margin: 15% auto;
-    padding: 2rem;
-    border-radius: 10px;
-    width: 90%;
-    max-width: 500px;
+.sidebar-overlay.active {
+    display: block;
+}
+
+/* Header Sticky */
+.sticky-header {
+    position: sticky;
+    top: 0;
+    z-index: 800;
+    box-shadow: var(--shadow);
+}
+
+.header nav {
+    background: linear-gradient(135deg, var(--primary-public) 0%, var(--secondary) 100%);
+    color: white;
+    padding: 1.5rem 2rem;
+    text-align: center;
     position: relative;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
-body.dark .modal-content {
-    background-color: #2a2a2a;
-    color: #ddd;
+.admin-header nav {
+    background: linear-gradient(135deg, var(--primary-admin) 0%, #20c997 100%);
 }
 
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-    position: absolute;
-    right: 1rem;
-    top: 1rem;
+.header h1 {
+    font-size: 2.2rem;
+    margin-bottom: 0.3rem;
 }
 
-.close:hover,
-.close:focus {
-    color: #000;
-}
-
-body.dark .close:hover,
-body.dark .close:focus {
-    color: #fff;
-}
-
-.modal form {
-    display: grid;
-    gap: 1rem;
-}
-
-.modal input,
-.modal textarea,
-.modal select {
-    padding: 0.8rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+.header p {
+    opacity: 0.9;
     font-size: 1rem;
 }
 
-body.dark .modal input,
-body.dark .modal textarea,
-body.dark .modal select {
-    background: #333;
-    color: #ddd;
-    border-color: #555;
-}
-
-.modal button {
-    background: #4facfe;
-    color: white;
-    border: none;
-    padding: 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    margin-top: 0.5rem;
-    transition: background 0.3s;
-}
-
-.modal button:hover {
-    background: #3d9bf5;
-}
-
-#cancelEdit {
-    background: #6c757d;
-    margin-left: 0.5rem;
-}
-
-#cancelEdit:hover {
-    background: #5a6268;
-}
-
-/* Header Public */
-#publicHeader nav {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-    color: white;
-    padding: 1rem 2rem;
-    text-align: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    position: relative;
-}
-
-#adminLoginBtn,
-#toggleDarkPublic {
+.header-actions {
     position: absolute;
-    top: 1rem;
+    top: 1.5rem;
     right: 2rem;
-    background: rgba(255,255,255,0.2);
-    border: none;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-    margin-left: 1rem;
-}
-
-#adminLoginBtn:hover,
-#toggleDarkPublic:hover {
-    background: rgba(255,255,255,0.3);
-}
-
-#publicHeader h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-}
-
-#publicHeader p {
-    font-size: 1.1rem;
-    opacity: 0.9;
-}
-
-/* Header Admin */
-#adminHeader nav {
-    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-    color: white;
-    padding: 1rem 2rem;
-    text-align: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    position: relative;
-}
-
-#adminActions {
-    position: absolute;
-    top: 1rem;
-    right: 8rem;
-}
-
-#logoutBtn {
-    background: rgba(255,255,255,0.2);
-    border: none;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-#logoutBtn:hover {
-    background: rgba(255,255,255,0.3);
-}
-
-#toggleDarkAdmin {
-    position: absolute;
-    top: 1rem;
-    right: 2rem;
-    background: rgba(255,255,255,0.2);
-    border: none;
-    color: white;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
-
-#toggleDarkAdmin:hover {
-    background: rgba(255,255,255,0.3);
-}
-
-#adminHeader h1 {
-    font-size: 2.5rem;
-    margin-bottom: 0.5rem;
-}
-
-#adminHeader p {
-    font-size: 1.1rem;
-    opacity: 0.9;
-}
-
-/* Main Content */
-main {
-    max-width: 1200px;
-    margin: 2rem auto;
-    padding: 0 1rem;
-}
-
-h2 {
-    text-align: center;
-    margin-bottom: 1rem;
-    color: #4facfe;
-}
-
-body.dark h2 {
-    color: #66b3ff;
-}
-
-/* Daftar Kode */
-.header-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-bottom: 2rem;
-}
-
-.search-filter {
     display: flex;
     gap: 1rem;
-    flex-wrap: wrap;
 }
 
-#searchInput,
-#kategoriFilter {
-    padding: 0.5rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-}
-
-body.dark #searchInput,
-body.dark #kategoriFilter {
-    background: #333;
-    color: #ddd;
-    border-color: #555;
-}
-
-.daftar-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1rem;
-}
-
-.kode-card {
-    background: white;
-    padding: 1.5rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+.header-actions button {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    padding: 0.7rem 1.2rem;
+    border-radius: var(--radius);
     cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.kode-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-}
-
-body.dark .kode-card {
-    background: #2a2a2a;
-    border: 1px solid #444;
-}
-
-.kode-card h3 {
-    color: #4facfe;
-    margin-bottom: 0.5rem;
-}
-
-body.dark .kode-card h3 {
-    color: #66b3ff;
-}
-
-.kode-card p {
-    margin-bottom: 1rem;
-    font-size: 0.9rem;
-    color: #666;
-}
-
-body.dark .kode-card p {
-    color: #bbb;
-}
-
-.kode-card .kategori-tag {
-    background: #4facfe;
-    color: white;
-    padding: 0.3rem 0.6rem;
-    border-radius: 15px;
-    font-size: 0.8rem;
-    display: inline-block;
-    margin-bottom: 1rem;
-}
-
-body.dark .kategori-tag {
-    background: #66b3ff;
-}
-
-/* Form Tambah Kode (Admin Only) */
-#tambah-kode {
-    margin-top: 3rem;
-    padding: 2rem;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-}
-
-body.dark #tambah-kode {
-    background: #2a2a2a;
-    border: 1px solid #444;
-}
-
-#formTambah {
-    display: grid;
-    gap: 1rem;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-#formTambah input,
-#formTambah textarea,
-#formTambah select {
-    padding: 0.8rem;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    font-size: 1rem;
-    width: 100%;
-}
-
-body.dark #formTambah input,
-body.dark #formTambah textarea,
-body.dark #formTambah select {
-    background: #333;
-    color: #ddd;
-    border-color: #555;
-}
-
-#formTambah textarea {
-    resize: vertical;
-    min-height: 100px;
-}
-
-#formTambah button {
-    background: #28a745;
-    color: white;
-    border: none

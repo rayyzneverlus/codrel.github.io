@@ -4,7 +4,7 @@ const ADMIN_CREDENTIALS = {
     password: 'codrel123'
 };
 
-// Data awal kode (jika localStorage kosong)
+// Data awal kode (jika localStorage kosong) - Tambah kategori "tools" sebagai tambahan
 const DATA_AWAL = {
     'ai-converter': {
         nama: 'AI & Converter',
@@ -140,6 +140,31 @@ export default handler`
 export default handler`
             }
         ]
+    },
+    'tools': {  // Kategori tambahan baru
+        nama: 'Tools',
+        kode: [
+            {
+                id: 4,
+                judul: 'Utility Function JS Sederhana',
+                deskripsi: 'Fungsi utilitas untuk format tanggal dan validasi email di JavaScript.',
+                bahasa: 'javascript',
+                kategori: 'tools',
+                kodeSumber: `// Utility Functions
+function formatDate(date) {
+    return new Date(date).toLocaleDateString('id-ID');
+}
+
+function validateEmail(email) {
+    const re = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+    return re.test(email);
+}
+
+// Contoh penggunaan
+console.log(formatDate(new Date())); // Output: tanggal hari ini
+console.log(validateEmail('test@example.com')); // Output: true`
+            }
+        ]
     }
 };
 
@@ -147,7 +172,7 @@ export default handler`
 let kumpulanKode = JSON.parse(localStorage.getItem('kumpulanKode')) || DATA_AWAL;
 let isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
 let currentEditingId = null;
-let currentFilterKategori = ''; // Untuk sidebar filter
+let currentFilterKategori = ''; // Untuk sidebar dan filter bawah search
 
 // Event listener saat DOM loaded
 document.addEventListener('DOMContentLoaded', () => {
@@ -172,7 +197,7 @@ function initApp() {
     setupSidebar();
 }
 
-// Setup Sidebar (Responsif)
+// Setup Sidebar (Responsif) - Update untuk kategori baru
 function setupSidebar() {
     const sidebar = document.getElementById('sidebar');
     const toggleBtn = document.getElementById('toggleSidebar');
@@ -195,7 +220,7 @@ function setupSidebar() {
         });
     }
 
-    // Event listener untuk kategori sidebar
+    // Event listener untuk kategori sidebar (termasuk "All" dan "tools")
     document.querySelectorAll('#kategoriSidebar a').forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
@@ -213,6 +238,9 @@ function setupSidebar() {
             tampilkanDaftarKode();
         });
     });
+
+    // Set active default untuk "All"
+    document.querySelector('#kategoriSidebar a[data-kategori=""]').classList.add('active');
 
     // Resize listener untuk responsif
     window.addEventListener('resize', () => {
@@ -278,10 +306,13 @@ function setupEventListeners() {
         tampilkanDaftarKode();
         // Tutup detail jika terbuka
         document.getElementById('kode-detail').style.display = 'none';
-        // Reset filter
+        // Reset filter ke "All"
         currentFilterKategori = '';
         document.getElementById('kategoriFilter').value = '';
         document.querySelector('#kategoriSidebar a[data-kategori=""]').classList.add('active');
+        document.querySelectorAll('#kategoriSidebar a').forEach(a => {
+            if (a.dataset.kategori !== '') a.classList.remove('active');
+        });
     });
 
     // Modal close
@@ -305,14 +336,22 @@ function setupEventListeners() {
     // Dark Mode Admin
     document.getElementById('toggleDarkAdmin').addEventListener('click', toggleDarkMode);
 
-    // Search & Filter
+    // Search & Filter (Sinkron dengan layout baru: search atas, filter bawah)
     document.getElementById('searchInput').addEventListener('input', tampilkanDaftarKode);
     document.getElementById('kategoriFilter').addEventListener('change', (e) => {
         currentFilterKategori = e.target.value;
+        // Update sidebar active berdasarkan filter
+        document.querySelectorAll('#kategoriSidebar a').forEach(a => a.classList.remove('active'));
+        const sidebarLink = document.querySelector(`#kategoriSidebar a[data-kategori="${currentFilterKategori}"]`);
+        if (sidebarLink) {
+            sidebarLink.classList.add('active');
+        } else {
+            document.querySelector('#kategoriSidebar a[data-kategori=""]').classList.add('active');
+        }
         tampilkanDaftarKode();
     });
 
-    // Form Tambah Kode (Admin Only)
+    // Form Tambah Kode (Admin Only) - Dengan spinner
     document.getElementById('formTambah').addEventListener('submit', tambahKode);
 
     // Kembali dari detail
@@ -322,7 +361,7 @@ function setupEventListeners() {
         document.getElementById('tambah-kode').style.display = isAdminLoggedIn ? 'block' : 'none';
     });
 
-    // Edit & Delete (Admin Only) - Event delegation karena dynamic
+    // Edit & Delete & Copy (Admin Only) - Event delegation karena dynamic
     document.addEventListener('click', (e) => {
         if (e.target.closest('#editBtn')) {
             bukaEditModal();
@@ -353,11 +392,11 @@ function updateDarkModeButtons(isDark) {
     const publicBtn = document.getElementById('toggleDarkPublic');
     const adminBtn = document.getElementById('toggleDarkAdmin');
     if (isDark) {
-        publicBtn.innerHTML = '<i class="fas fa-sun"></i> Light';
-        adminBtn.innerHTML = '<i class="fas fa-sun"></i> Light';
+        publicBtn.innerHTML = '<i class="fas fa-sun"></i>';
+        adminBtn.innerHTML = '<i class="fas fa-sun"></i>';
     } else {
-        publicBtn.innerHTML = '<i class="fas fa-moon"></i> Dark';
-        adminBtn.innerHTML = '<i class="fas fa-moon"></i> Dark';
+        publicBtn.innerHTML = '<i class="fas fa-moon"></i>';
+        adminBtn.innerHTML = '<i class="fas fa-moon"></i>';
     }
 }
 
@@ -366,43 +405,14 @@ function simpanData() {
     localStorage.setItem('kumpulanKode', JSON.stringify(kumpulanKode));
 }
 
+// Escape HTML untuk keamanan
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
 // Cari kode berdasarkan ID
 function cariKodeById(id) {
     for (let key in kumpulanKode) {
         const kode = kumpulanKode[key].kode.find(k => k.id === id);
-        if (kode) return kode;
-    }
-    return null;
-}
-
-// Tampilkan Daftar Kode (Public & Admin) - Dengan animasi
-function tampilkanDaftarKode() {
-    const search = document.getElementById('searchInput').value.toLowerCase();
-    const filterKategori = currentFilterKategori || document.getElementById('kategoriFilter').value;
-    const daftarCard = document.getElementById('daftar-card');
-    daftarCard.innerHTML = '';
-
-    let hasResults = false;
-    Object.keys(kumpulanKode).forEach(key => {
-        kumpulanKode[key].kode.forEach((kode, index) => {
-            if ((kode.judul.toLowerCase().includes(search) || kode.deskripsi.toLowerCase().includes(search)) &&
-                (!filterKategori || kode.kategori === filterKategori)) {
-                hasResults = true;
-                const card = document.createElement('div');
-                card.className = 'kode-card fade-in';
-                card.style.animationDelay = `${index * 0.1}s`; // Stagger animasi
-                card.innerHTML = `
-                    <h3><i class="fas fa-file-code"></i> ${escapeHtml(kode.judul)}</h3>
-                    <span class="kategori-tag">${escapeHtml(kumpulanKode[kode.kategori].nama)}</span>
-                    <p>${escapeHtml(kode.deskripsi)}</p>
-                `;
-                card.addEventListener('click', () => tampilkanDetail(kode));
-                daftarCard.appendChild(card);
-            }
-        });
-    });
-
-    if (!hasResults) {
-        daftarCard.innerHTML = `
-            <div class="empty-state">
-                <i class="fas fa-search" style="font-size: 3rem; color:

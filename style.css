@@ -10,7 +10,7 @@ body {
     line-height: 1.6;
     color: #333;
     background-color: #f4f4f4;
-    transition: background-color 0.3s, color 0.3s;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body.dark {
@@ -18,26 +18,174 @@ body.dark {
     color: #ddd;
 }
 
-/* Header */
-header nav {
+/* Modal (untuk Admin Login & Edit) */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 2rem;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+body.dark .modal-content {
+    background-color: #2a2a2a;
+    color: #ddd;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+}
+
+body.dark .close:hover,
+body.dark .close:focus {
+    color: #fff;
+}
+
+.modal form {
+    display: grid;
+    gap: 1rem;
+}
+
+.modal input,
+.modal textarea,
+.modal select {
+    padding: 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+body.dark .modal input,
+body.dark .modal textarea,
+body.dark .modal select {
+    background: #333;
+    color: #ddd;
+    border-color: #555;
+}
+
+.modal button {
+    background: #4facfe;
+    color: white;
+    border: none;
+    padding: 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-top: 0.5rem;
+    transition: background 0.3s;
+}
+
+.modal button:hover {
+    background: #3d9bf5;
+}
+
+#cancelEdit {
+    background: #6c757d;
+    margin-left: 0.5rem;
+}
+
+#cancelEdit:hover {
+    background: #5a6268;
+}
+
+/* Header Public */
+#publicHeader nav {
     background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
     color: white;
     padding: 1rem 2rem;
     text-align: center;
     box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: relative;
 }
 
-header h1 {
+#adminLoginBtn,
+#toggleDarkPublic {
+    position: absolute;
+    top: 1rem;
+    right: 2rem;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-left: 1rem;
+}
+
+#adminLoginBtn:hover,
+#toggleDarkPublic:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+#publicHeader h1 {
     font-size: 2.5rem;
     margin-bottom: 0.5rem;
 }
 
-header p {
+#publicHeader p {
     font-size: 1.1rem;
     opacity: 0.9;
 }
 
-#toggleDark {
+/* Header Admin */
+#adminHeader nav {
+    background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+    color: white;
+    padding: 1rem 2rem;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+#adminActions {
+    position: absolute;
+    top: 1rem;
+    right: 8rem;
+}
+
+#logoutBtn {
+    background: rgba(255,255,255,0.2);
+    border: none;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+#logoutBtn:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+#toggleDarkAdmin {
     position: absolute;
     top: 1rem;
     right: 2rem;
@@ -50,8 +198,18 @@ header p {
     transition: background 0.3s;
 }
 
-#toggleDark:hover {
+#toggleDarkAdmin:hover {
     background: rgba(255,255,255,0.3);
+}
+
+#adminHeader h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+#adminHeader p {
+    font-size: 1.1rem;
+    opacity: 0.9;
 }
 
 /* Main Content */
@@ -65,6 +223,10 @@ h2 {
     text-align: center;
     margin-bottom: 1rem;
     color: #4facfe;
+}
+
+body.dark h2 {
+    color: #66b3ff;
 }
 
 /* Daftar Kode */
@@ -82,14 +244,16 @@ h2 {
     flex-wrap: wrap;
 }
 
-#searchInput, #kategoriFilter {
+#searchInput,
+#kategoriFilter {
     padding: 0.5rem;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 1rem;
 }
 
-body.dark #searchInput, body.dark #kategoriFilter {
+body.dark #searchInput,
+body.dark #kategoriFilter {
     background: #333;
     color: #ddd;
     border-color: #555;
@@ -117,11 +281,16 @@ body.dark #searchInput, body.dark #kategoriFilter {
 
 body.dark .kode-card {
     background: #2a2a2a;
+    border: 1px solid #444;
 }
 
 .kode-card h3 {
     color: #4facfe;
     margin-bottom: 0.5rem;
+}
+
+body.dark .kode-card h3 {
+    color: #66b3ff;
 }
 
 .kode-card p {
@@ -144,7 +313,11 @@ body.dark .kode-card p {
     margin-bottom: 1rem;
 }
 
-/* Form Tambah Kode */
+body.dark .kategori-tag {
+    background: #66b3ff;
+}
+
+/* Form Tambah Kode (Admin Only) */
 #tambah-kode {
     margin-top: 3rem;
     padding: 2rem;
@@ -155,6 +328,7 @@ body.dark .kode-card p {
 
 body.dark #tambah-kode {
     background: #2a2a2a;
+    border: 1px solid #444;
 }
 
 #formTambah {
@@ -164,7 +338,9 @@ body.dark #tambah-kode {
     margin: 0 auto;
 }
 
-#formTambah input, #formTambah textarea, #formTambah select {
+#formTambah input,
+#formTambah textarea,
+#formTambah select {
     padding: 0.8rem;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -172,7 +348,9 @@ body.dark #tambah-kode {
     width: 100%;
 }
 
-body.dark #formTambah input, body.dark #formTambah textarea, body.dark #formTambah select {
+body.dark #formTambah input,
+body.dark #formTambah textarea,
+body.dark #formTambah select {
     background: #333;
     color: #ddd;
     border-color: #555;
@@ -184,110 +362,6 @@ body.dark #formTambah input, body.dark #formTambah textarea, body.dark #formTamb
 }
 
 #formTambah button {
-    background: #4facfe;
-    color: white;
-    border: none;
-    padding: 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background 0.3s;
-}
-
-#formTambah button:hover {
-    background: #3d9bf5;
-}
-
-/* Detail Kode */
-#kode-detail {
-    background: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    margin: 2rem 0;
-}
-
-body.dark #kode-detail {
-    background: #2a2a2a;
-}
-
-#kembali {
-    background: #4facfe;
-    color: white;
-    border: none;
-    padding: 0.8rem 1.5rem;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 1rem;
-    font-size: 1rem;
-}
-
-#detail-content h3 {
-    color: #4facfe;
-    margin-bottom: 1rem;
-}
-
-#detail-content p {
-    margin-bottom: 1rem;
-    text-align: justify;
-}
-
-pre {
-    background: #f8f8f8;
-    padding: 1rem;
-    border-radius: 5px;
-    overflow-x: auto;
-    margin: 1rem 0;
-}
-
-body.dark pre {
-    background: #1a1a1a;
-}
-
-.copy-btn {
     background: #28a745;
     color: white;
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    cursor: pointer;
-    float: right;
-    margin-bottom: 1rem;
-}
-
-.copy-btn:hover {
-    background: #218838;
-}
-
-/* Footer */
-footer {
-    text-align: center;
-    padding: 1rem;
-    background: #333;
-    color: white;
-    margin-top: 2rem;
-}
-
-/* Responsif */
-@media (max-width: 768px) {
-    header h1 {
-        font-size: 2rem;
-    }
-    #toggleDark {
-        right: 1rem;
-        top: 0.5rem;
-    }
-    .header-section {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    .search-filter {
-        justify-content: center;
-    }
-    main {
-        padding: 0 0.5rem;
-    }
-    #tambah-kode {
-        padding: 1rem;
-    }
-}
+    border: none

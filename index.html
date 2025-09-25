@@ -43,10 +43,11 @@
         <div class="sidebar-content">
             <h3><i class="fas fa-folder-open"></i> Kategori</h3>
             <ul id="kategoriSidebar">
-                <li><a href="#" data-kategori=""><i class="fas fa-list"></i> Semua</a></li>
+                <li><a href="#" data-kategori=""><i class="fas fa-list"></i> All</a></li>
                 <li><a href="#" data-kategori="ai-converter"><i class="fas fa-robot"></i> AI & Converter</a></li>
                 <li><a href="#" data-kategori="web"><i class="fas fa-globe"></i> Web Development</a></li>
                 <li><a href="#" data-kategori="bot"><i class="fas fa-comments"></i> Bot & Automation</a></li>
+                <li><a href="#" data-kategori="tools"><i class="fas fa-tools"></i> Tools</a></li>
             </ul>
         </div>
     </aside>
@@ -59,9 +60,11 @@
         <nav>
             <h1><i class="fas fa-code"></i> Codrel</h1>
             <p>Mode Public (Hanya Lihat) - Jelajahi kode sumber berkualitas</p>
-            <div class="header-actions">
-                <button id="adminLoginBtn" aria-label="Login Admin"><i class="fas fa-lock"></i> Admin</button>
-                <button id="toggleDarkPublic" aria-label="Toggle Dark Mode"><i class="fas fa-moon"></i> Dark</button>
+            <div class="header-login">
+                <button id="adminLoginBtn" aria-label="Login Admin"><i class="fas fa-lock"></i> Admin Login</button>
+            </div>
+            <div class="header-dark">
+                <button id="toggleDarkPublic" aria-label="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
             </div>
         </nav>
     </header>
@@ -71,9 +74,11 @@
         <nav>
             <h1><i class="fas fa-crown"></i> Codrel - Admin Mode</h1>
             <p>Selamat datang, Admin! Kelola kode dengan mudah.</p>
-            <div class="header-actions">
+            <div class="header-login">
                 <button id="logoutBtn" aria-label="Logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                <button id="toggleDarkAdmin" aria-label="Toggle Dark Mode"><i class="fas fa-moon"></i> Dark</button>
+            </div>
+            <div class="header-dark">
+                <button id="toggleDarkAdmin" aria-label="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
             </div>
         </nav>
     </header>
@@ -82,20 +87,23 @@
         <section id="daftar-kode">
             <div class="header-section">
                 <h2><i class="fas fa-list-alt"></i> Daftar Kode Tersedia</h2>
-                <div class="search-filter">
-                    <div class="input-group">
-                        <input type="text" id="searchInput" placeholder="Cari kode...">
+                <div class="search-section">
+                    <div class="input-group full-width">
+                        <input type="text" id="searchInput" placeholder="Cari kode berdasarkan judul atau deskripsi...">
                         <i class="fas fa-search"></i>
                     </div>
+                </div>
+                <div class="filter-section">
                     <select id="kategoriFilter">
-                        <option value="">Semua Kategori</option>
+                        <option value="">All Kategori</option>
                         <option value="ai-converter">AI & Converter</option>
                         <option value="web">Web Development</option>
                         <option value="bot">Bot & Automation</option>
+                        <option value="tools">Tools</option>
                     </select>
                 </div>
+                <div id="daftar-card" class="daftar-grid"></div>
             </div>
-            <div id="daftar-card" class="daftar-grid"></div>
         </section>
 
         <!-- Form Tambah Kode (Admin Only) -->
@@ -127,6 +135,7 @@
                             <option value="ai-converter">AI & Converter</option>
                             <option value="web">Web Development</option>
                             <option value="bot">Bot & Automation</option>
+                            <option value="tools">Tools</option>
                         </select>
                         <i class="fas fa-folder"></i>
                     </div>
@@ -179,6 +188,7 @@
                                 <option value="ai-converter">AI & Converter</option>
                                 <option value="web">Web Development</option>
                                 <option value="bot">Bot & Automation</option>
+                                <option value="tools">Tools</option>
                             </select>
                             <i class="fas fa-folder"></i>
                         </div>
@@ -200,4 +210,4 @@
 
     <script src="script.js"></script>
 </body>
-    </html>
+                    </html>

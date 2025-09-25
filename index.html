@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Codrel - Kumpulan Kode Sumber</title>
+    <title>Codrel - Kumpulan Kode Sumber (Public)</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Roboto:wght@300;400&display=swap" rel="stylesheet">
@@ -17,73 +17,18 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
 </head>
 <body>
-    <!-- Modal Admin Login -->
-    <div id="adminModal" class="modal">
-        <div class="modal-content">
-            <span class="close" aria-label="Tutup modal"><i class="fas fa-times"></i></span>
-            <h2><i class="fas fa-lock"></i> Admin Login (Khusus Pemilik)</h2>
-            <form id="formAdminLogin">
-                <div class="input-group">
-                    <input type="text" id="usernameAdmin" placeholder="Username (admin)" required>
-                    <i class="fas fa-user"></i>
-                </div>
-                <div class="input-group">
-                    <input type="password" id="passwordAdmin" placeholder="Password" required>
-                    <i class="fas fa-key"></i>
-                </div>
-                <button type="submit"><i class="fas fa-sign-in-alt"></i> Masuk Admin Mode</button>
-            </form>
-            <p id="loginError" style="color: #ff6b6b; display: none;">Username atau password salah!</p>
-        </div>
-    </div>
-
-    <!-- Sidebar Kategori -->
-    <aside id="sidebar" class="sidebar">
-        <button id="toggleSidebar" class="toggle-sidebar-btn"><i class="fas fa-bars"></i></button>
-        <div class="sidebar-content">
-            <h3><i class="fas fa-folder-open"></i> Kategori</h3>
-            <ul id="kategoriSidebar">
-                <li><a href="#" data-kategori=""><i class="fas fa-list"></i> All</a></li>
-                <li><a href="#" data-kategori="ai-converter"><i class="fas fa-robot"></i> AI & Converter</a></li>
-                <li><a href="#" data-kategori="web"><i class="fas fa-globe"></i> Web Development</a></li>
-                <li><a href="#" data-kategori="bot"><i class="fas fa-comments"></i> Bot & Automation</a></li>
-                <li><a href="#" data-kategori="tools"><i class="fas fa-tools"></i> Tools</a></li>
-            </ul>
-        </div>
-    </aside>
-
-    <!-- Overlay untuk Sidebar Mobile -->
-    <div id="sidebarOverlay" class="sidebar-overlay"></div>
-
-    <!-- Header Public -->
-    <header id="publicHeader" class="header sticky-header">
+    <header class="header sticky-header public-header">
         <nav>
             <h1><i class="fas fa-code"></i> Codrel</h1>
             <p>Mode Public (Hanya Lihat) - Jelajahi kode sumber berkualitas</p>
-            <div class="header-login">
-                <button id="adminLoginBtn" aria-label="Login Admin"><i class="fas fa-lock"></i> Admin Login</button>
-            </div>
-            <div class="header-dark">
-                <button id="toggleDarkPublic" aria-label="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
+            <div class="header-actions">
+                <button id="toggleDark" aria-label="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
+                <a href="admin/login.html" class="admin-link" aria-label="Admin Login"><i class="fas fa-lock"></i> Admin</a>
             </div>
         </nav>
     </header>
 
-    <!-- Header Admin -->
-    <header id="adminHeader" class="header sticky-header admin-header" style="display: none;">
-        <nav>
-            <h1><i class="fas fa-crown"></i> Codrel - Admin Mode</h1>
-            <p>Selamat datang, Admin! Kelola kode dengan mudah.</p>
-            <div class="header-login">
-                <button id="logoutBtn" aria-label="Logout"><i class="fas fa-sign-out-alt"></i> Logout</button>
-            </div>
-            <div class="header-dark">
-                <button id="toggleDarkAdmin" aria-label="Toggle Dark Mode"><i class="fas fa-moon"></i></button>
-            </div>
-        </nav>
-    </header>
-
-    <main id="mainContent">
+    <main>
         <section id="daftar-kode">
             <div class="header-section">
                 <h2><i class="fas fa-list-alt"></i> Daftar Kode Tersedia</h2>
@@ -106,108 +51,17 @@
             </div>
         </section>
 
-        <!-- Form Tambah Kode (Admin Only) -->
-        <section id="tambah-kode" style="display: none;">
-            <h2><i class="fas fa-plus"></i> Tambah Kode Baru</h2>
-            <form id="formTambah" class="form-modern">
-                <div class="input-group">
-                    <input type="text" id="judulInput" placeholder="Judul Kode" required>
-                    <i class="fas fa-heading"></i>
-                </div>
-                <div class="input-group">
-                    <textarea id="deskripsiInput" placeholder="Deskripsi singkat" required></textarea>
-                    <i class="fas fa-align-left"></i>
-                </div>
-                <div class="form-row">
-                    <div class="input-group">
-                        <select id="bahasaInput" required>
-                            <option value="">Pilih Bahasa</option>
-                            <option value="javascript">JavaScript</option>
-                            <option value="python">Python</option>
-                            <option value="html">HTML</option>
-                            <option value="css">CSS</option>
-                        </select>
-                        <i class="fas fa-code"></i>
-                    </div>
-                    <div class="input-group">
-                        <select id="kategoriInput" required>
-                            <option value="">Pilih Kategori</option>
-                            <option value="ai-converter">AI & Converter</option>
-                            <option value="web">Web Development</option>
-                            <option value="bot">Bot & Automation</option>
-                            <option value="tools">Tools</option>
-                        </select>
-                        <i class="fas fa-folder"></i>
-                    </div>
-                </div>
-                <div class="input-group">
-                    <textarea id="kodeInput" placeholder="Masukkan kode sumber di sini..." required rows="10"></textarea>
-                    <i class="fas fa-file-code"></i>
-                </div>
-                <button type="submit" id="submitTambah"><i class="fas fa-save"></i> Tambah Kode <span class="spinner" style="display: none;"></span></button>
-            </form>
-        </section>
-
-        <!-- Detail Kode -->
+        <!-- Detail Kode (Public: Hanya Lihat) -->
         <section id="kode-detail" style="display: none;">
             <button id="kembali" class="btn-back"><i class="fas fa-arrow-left"></i> Kembali</button>
-            <div id="detail-actions" style="display: none;" class="detail-actions">
-                <button id="editBtn" class="btn-edit"><i class="fas fa-edit"></i> Edit</button>
-                <button id="deleteBtn" class="btn-delete"><i class="fas fa-trash"></i> Delete</button>
-                <button id="copyBtn" class="btn-copy"><i class="fas fa-copy"></i> Copy</button>
-            </div>
             <div id="detail-content" class="detail-content"></div>
         </section>
-
-        <!-- Modal Edit (Admin Only) -->
-        <div id="edit-modal" class="modal" style="display: none;">
-            <div class="modal-content">
-                <span class="close" aria-label="Tutup"><i class="fas fa-times"></i></span>
-                <h2><i class="fas fa-edit"></i> Edit Kode</h2>
-                <form id="formEdit" class="form-modern">
-                    <div class="input-group">
-                        <input type="text" id="editJudul" required>
-                        <i class="fas fa-heading"></i>
-                    </div>
-                    <div class="input-group">
-                        <textarea id="editDeskripsi" required></textarea>
-                        <i class="fas fa-align-left"></i>
-                    </div>
-                    <div class="form-row">
-                        <div class="input-group">
-                            <select id="editBahasa" required>
-                                <option value="javascript">JavaScript</option>
-                                <option value="python">Python</option>
-                                <option value="html">HTML</option>
-                                <option value="css">CSS</option>
-                            </select>
-                            <i class="fas fa-code"></i>
-                        </div>
-                        <div class="input-group">
-                            <select id="editKategori" required>
-                                <option value="ai-converter">AI & Converter</option>
-                                <option value="web">Web Development</option>
-                                <option value="bot">Bot & Automation</option>
-                                <option value="tools">Tools</option>
-                            </select>
-                            <i class="fas fa-folder"></i>
-                        </div>
-                    </div>
-                    <div class="input-group">
-                        <textarea id="editKode" required rows="10"></textarea>
-                        <i class="fas fa-file-code"></i>
-                    </div>
-                    <button type="submit" id="submitEdit"><i class="fas fa-save"></i> Update <span class="spinner" style="display: none;"></span></button>
-                    <button type="button" id="cancelEdit" class="btn-secondary"><i class="fas fa-times"></i> Batal</button>
-                </form>
-            </div>
-        </div>
     </main>
 
     <footer>
-        <p><i class="fas fa-heart"></i> &copy; 2024 Codrel. Dibuat dengan ❤️ oleh AI Assistant.</p>
+        <p><i class="fas fa-eye"></i> &copy; 2024 Codrel. Public hanya lihat. Dibuat dengan ❤️ oleh AI Assistant.</p>
     </footer>
 
-    <script src="script.js"></script>
+    <script src="script-public.js"></script>
 </body>
-                    </html>
+        </html>

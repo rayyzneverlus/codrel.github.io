@@ -52,7 +52,7 @@ h1, h2, h3 {
     animation: fadeIn 0.5s ease-out;
 }
 
-/* Sidebar */
+/* Sidebar (Tetap Sama) */
 .sidebar {
     position: fixed;
     left: 0;
@@ -138,7 +138,7 @@ body.dark .sidebar a.active {
     display: block;
 }
 
-/* Header Sticky */
+/* Header Sticky - Dipisah Login/Dark */
 .sticky-header {
     position: sticky;
     top: 0;
@@ -166,20 +166,17 @@ body.dark .sidebar a.active {
 .header p {
     opacity: 0.9;
     font-size: 1rem;
+    margin-bottom: 1rem;
 }
 
-.header-actions {
-    position: absolute;
-    top: 1.5rem;
-    right: 2rem;
-    display: flex;
-    gap: 1rem;
+/* Pisah Login dan Dark Mode */
+.header-login {
+    display: inline-block;
+    margin: 0 auto;
 }
 
-.header-actions button {
+.header-login button {
     background: rgba(255,255,255,0.2);
     border: none;
     color: white;
-    padding: 0.7rem 1.2rem;
-    border-radius: var(--radius);
-    cursor: pointer;
+   

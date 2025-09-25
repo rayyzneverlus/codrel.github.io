@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codrel - Kumpulan Kode Sumber Terbaik</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-html.min.js"></script>
+</head>
+<body>
+    <header>
+        <nav>
+            <h1>Codrel</h1>
+            <p>Kumpulan kode sumber berkualitas untuk developer</p>
+            <button id="toggleDark">🌙 Dark Mode</button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="daftar-kode">
+            <div class="header-section">
+                <h2>Daftar Kode Tersedia</h2>
+                <div class="search-filter">
+                    <input type="text" id="searchInput" placeholder="Cari kode berdasarkan judul atau deskripsi...">
+                    <select id="kategoriFilter">
+                        <option value="">Semua Kategori</option>
+                        <option value="ai-converter">AI & Converter</option>
+                        <option value="web">Web Development</option>
+                        <option value="bot">Bot & Automation</option>
+                    </select>
+                </div>
+            </div>
+            <div id="daftar-card" class="daftar-grid"></div>
+        </section>
+
+        <section id="tambah-kode">
+            <h2>Tambah Kode Baru</h2>
+            <form id="formTambah">
+                <input type="text" id="judulInput" placeholder="Judul Kode" required>
+                <textarea id="deskripsiInput" placeholder="Deskripsi singkat" required></textarea>
+                <select id="bahasaInput" required>
+                    <option value="">Pilih Bahasa</option>
+                    <option value="javascript">JavaScript</option>
+                    <option value="python">Python</option>
+                    <option value="html">HTML</option>
+                    <option value="css">CSS</option>
+                </select>
+                <select id="kategoriInput" required>
+                    <option value="">Pilih Kategori</option>
+                    <option value="ai-converter">AI & Converter</option>
+                    <option value="web">Web Development</option>
+                    <option value="bot">Bot & Automation</option>
+                </select>
+                <textarea id="kodeInput" placeholder="Masukkan kode sumber di sini..." required rows="10"></textarea>
+                <button type="submit">Tambah Kode</button>
+            </form>
+        </section>
+
+        <section id="kode-detail" style="display: none;">
+            <button id="kembali">← Kembali ke Daftar</button>
+            <div id="detail-content"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Codrel. Dibuat dengan ❤️ oleh AI Assistant. Kode boleh digunakan dengan atribusi.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
